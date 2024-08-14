@@ -1,1 +1,0 @@
-# jashpiam.dev
