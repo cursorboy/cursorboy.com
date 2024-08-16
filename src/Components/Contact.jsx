@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { FaCheck } from "react-icons/fa";
+import emailjs from "@emailjs/browser";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +9,7 @@ const Contact = () => {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const formRef = useRef();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,17 +21,23 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted!");
-    setSubmitted(true);
+    
+    emailjs.sendForm('service_vqftcs5', 'template_j4tj89e', formRef.current, 'w4zUhdV5usG1yNP5K')
+      .then((response) => {
+        console.log("Email sent successfully!", response.status, response.text);
+        setSubmitted(true);
+      }, (error) => {
+        console.error("Failed to send email.", error);
+      });
   };
 
   return (
     <div className="contact-container">
       <h2>Contact Me</h2>
       {submitted ? (
-        <p className="submitted-message">Form has been submitted!</p>
+        <p className="submitted-message">Thank you! Your message has been sent.</p>
       ) : (
-        <form onSubmit={handleSubmit}>
+        <form ref={formRef} onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Name:</label>
             <input
@@ -62,13 +70,10 @@ const Contact = () => {
               required
             />
           </div>
-          <a type="submit" href="mailTo:piamparekh17@gmail.com">
-            <button className="submit-btn">
-              {" "}
-              Submit
-              <FaCheck> </FaCheck>{" "}
-            </button>
-          </a>
+          <button type="submit" className="submit-btn">
+            Submit
+            <FaCheck />
+          </button>
         </form>
       )}
     </div>
