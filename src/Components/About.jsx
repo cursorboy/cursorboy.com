@@ -1,6 +1,9 @@
 import React from "react";
 import Skills from "./Skills.jsx";
 import { FaFileDownload } from "react-icons/fa";
+import profileImage from '../images/IMG_0314.jpg';
+
+
 const About = () => {
   return (
     <>
@@ -11,7 +14,6 @@ const About = () => {
           </h1>
           <p>
             Hi, my name is <b>Piam Parekh</b>.
-
             I'm a <b>Software Developer </b> and a second year
             student pursuing <b>BS in Mathematics</b> at University of California, Santa Barbara<br />
             <br />
@@ -30,8 +32,13 @@ const About = () => {
             </button>
           </a>
         </div>
-
-        <div></div>
+        <div className="AboutImage">
+        <img src={profileImage} alt="Piam Parekh" className="profile-image" />
+        </div>
+      </div>
+      <div className="scroll-down-prompt">
+        <p>Scroll down</p>
+        <span className="arrow">&#x2193;</span>
       </div>
 
       <h1 className="SkillsHeading"> Skillset</h1>

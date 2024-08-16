@@ -9,6 +9,7 @@ const Contact = () => {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); 
   const formRef = useRef();
 
   const handleChange = (e) => {
@@ -22,12 +23,18 @@ const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
+    if (isSubmitting) return; 
+
+    setIsSubmitting(true); 
+
     emailjs.sendForm('service_vqftcs5', 'template_j4tj89e', formRef.current, 'w4zUhdV5usG1yNP5K')
       .then((response) => {
         console.log("Email sent successfully!", response.status, response.text);
         setSubmitted(true);
+        setIsSubmitting(false); 
       }, (error) => {
         console.error("Failed to send email.", error);
+        setIsSubmitting(false); 
       });
   };
 
@@ -70,8 +77,8 @@ const Contact = () => {
               required
             />
           </div>
-          <button type="submit" className="submit-btn">
-            Submit
+          <button type="submit" className="submit-btn" disabled={isSubmitting}>
+            {isSubmitting ? "Submitting..." : "Submit"}
             <FaCheck />
           </button>
         </form>

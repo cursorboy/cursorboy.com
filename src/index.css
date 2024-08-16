@@ -12,7 +12,7 @@
 }
 body {
   font-family: "Raleway", sans-serif;
-  background: linear-gradient(120deg,#363088,#88fbff); /* Black to Gray Gradient */
+  background: linear-gradient(120deg,#363088,#88fbff); 
   color: #e7e7e7;
   min-height: 100vh;
 }
@@ -52,7 +52,6 @@ button:hover {
   transition: all ease-in-out 0.3s;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
   scroll-behavior: smooth;
@@ -65,8 +64,6 @@ button:hover {
   background: #01111a;
   border-radius: 100px;
 }
-
-/* NAVBAR */
 
 .Navbar {
   display: flex;
@@ -202,7 +199,6 @@ button:hover {
   }
 }
 
-/* HOME PAGE */
 
 .HomePage {
   display: flex;
@@ -261,59 +257,115 @@ button:hover {
   }
 }
 
-/* ABOUT */
-
 .AboutPage {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between; 
+  align-items: center;
   min-height: 80vh;
   margin-top: 100px;
-  align-items: center;
   padding: 25px;
+  text-align: left; 
 }
 
 .AboutText {
-  width: 50%;
+  width: 45%; 
   font-weight: 500;
   font-size: 20px;
   line-height: 30px;
   letter-spacing: 1.2px;
+  margin-right: 20px; 
+  margin-left: 200px;
 }
+
 .AboutTextHeading {
   font-size: 35px;
   font-weight: 600;
   padding-bottom: 40px;
 }
-.AboutText a {
-  color: var(--color);
-  text-decoration: underline;
-  font-weight: bold;
-  text-shadow: 1px 1px 2px #000000;
 
-  
+.AboutImage {
+  flex: 0 0 250px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 200px;
+}
+
+.profile-image {
+  width: 150%;
+  border-radius:30px;
+  box-shadow: 0 50px 50px rgba(0, 0, 0, 0.1);
+}
+
+.scroll-down-prompt {
+  text-align: left;
+  margin-top: -50px;
+  font-size: 30px;
+  color: #e7e7e7;
+  margin-left: 100px;  
+}
+
+.scroll-down-prompt .arrow {
+  display: block;
+  font-size: 40px;
+  margin-top: 5px;
+  animation: bounce 2s infinite;
+  margin-left: 75px;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
 }
 
 @media (max-width: 900px) {
   .AboutPage {
-    display: block;
+    flex-direction: column; 
     text-align: center;
-    padding: 30px;
   }
+
   .AboutText {
-    text-align: left;
-    display: inline-block;
-    width: 95%;
-    line-height: 24px;
-    letter-spacing: 0.6px;
-    margin-bottom: 80px;
+    width: 90%; 
+    margin-right: 0; 
+    margin-bottom: 30px;
   }
+
+  .AboutImage {
+    margin-bottom: 30px; 
+  }
+
+  .profile-image {
+    width: 150px; 
+  }
+
+  .scroll-down-prompt {
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 500px) {
+  .AboutText {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
   .AboutTextHeading {
     font-size: 26px;
   }
 
-  .Avatar {
-    width: 200px;
-    margin-bottom: 75px;
+  .profile-image {
+    width: 120px; 
+  }
+
+  .scroll-down-prompt .arrow {
+    font-size: 20px;
   }
 }
 
