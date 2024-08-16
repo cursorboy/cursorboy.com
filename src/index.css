@@ -296,13 +296,18 @@ button:hover {
   border-radius:30px;
   box-shadow: 0 50px 50px rgba(0, 0, 0, 0.1);
 }
-
 .scroll-down-prompt {
   text-align: left;
+  margin-left: 100px;
   margin-top: -50px;
   font-size: 30px;
   color: #e7e7e7;
-  margin-left: 100px;  
+  opacity: 1; /* Start fully visible */
+  transition: opacity 0.5s ease-in-out; /* Smooth transition for fading */
+}
+
+.scroll-down-prompt.fade-out {
+  opacity: 0; /* Fully transparent */
 }
 
 .scroll-down-prompt .arrow {

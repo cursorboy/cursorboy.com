@@ -1,10 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Skills from "./Skills.jsx";
 import { FaFileDownload } from "react-icons/fa";
 import profileImage from '../images/IMG_0314.jpg';
 
-
 const About = () => {
+  useEffect(() => {
+    const scrollPrompt = document.querySelector(".scroll-down-prompt");
+
+    const handleScroll = () => {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+
+      if (scrollTop + clientHeight >= scrollHeight - 200) {
+        scrollPrompt.classList.add("fade-out");
+      } else {
+        scrollPrompt.classList.remove("fade-out");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <>
       <div className="AboutPage">
@@ -33,7 +54,7 @@ const About = () => {
           </a>
         </div>
         <div className="AboutImage">
-        <img src={profileImage} alt="Piam Parekh" className="profile-image" />
+          <img src={profileImage} alt="Piam Parekh" className="profile-image" />
         </div>
       </div>
       <div className="scroll-down-prompt">

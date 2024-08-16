@@ -9,7 +9,7 @@ const Projects = () => {
   return (
     <div>
       <h1 className="projectHeading">
-        My <b>Projects</b>
+        My <b>Major</b> Projects
       </h1>
       <div className="project">
         <ProjectBox projectPhoto={GymImage} projectName="Levels" />
