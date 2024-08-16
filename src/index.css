@@ -8,11 +8,11 @@
   position: relative;
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
-  --color: #7300ff;
+  --color: #000000;
 }
 body {
   font-family: "Raleway", sans-serif;
-  background: linear-gradient(120deg,#343434,#292929); /* Black to Gray Gradient */
+  background: linear-gradient(120deg,#363088,#88fbff); /* Black to Gray Gradient */
   color: #e7e7e7;
   min-height: 100vh;
 }
@@ -39,7 +39,7 @@ button {
   padding: 10px;
   border-radius: 5px;
   background-color: var(--color);
-  color: #e7e7e7;
+  color: #ffffff;
   height: 50px;
   cursor: pointer;
   text-decoration: none;
