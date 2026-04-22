@@ -1,47 +1,29 @@
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { GeistSans } from "geist/font/sans"
 import type React from "react"
-
-import { cn } from "@/lib/utils"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Navigation } from "@/components/navigation"
-import { Footer } from "@/components/footer"
-import { EnvChecker } from "@/components/env-checker"
-import { EnvDebug } from "@/components/env-debug"
-
 import "./globals.css"
 
 export const metadata = {
-  title: "Jash-Piam Parekh - Software Developer",
-  description: "Software Developer and Mathematics Student at UCSB",
-    generator: 'v0.dev'
+  title: "Piam Parekh",
+  description: "Software developer and math student at UCSB.",
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={cn("min-h-screen bg-gradient-to-br from-indigo-900 to-cyan-400", GeistSans.className)}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <div className="relative flex min-h-screen flex-col">
-            <Navigation />
-            <main className="flex-1">{children}</main>
-            <Footer />
-            {process.env.NODE_ENV === "development" && <EnvChecker />}
-          </div>
-        </ThemeProvider>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@400;600;700&family=Space+Grotesk:wght@400;500;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body suppressHydrationWarning>
+        {children}
         <Analytics />
         <SpeedInsights />
-        {process.env.NODE_ENV === "development" && <EnvDebug />}
       </body>
     </html>
   )
 }
-
-
-
-import './globals.css'
