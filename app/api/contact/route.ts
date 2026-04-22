@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       from: "Portfolio Contact <onboarding@resend.dev>", // You can use this for testing
       to: "piamparekh17@gmail.com", // Your email
       subject: `New contact from ${data.name}`,
-      reply_to: data.email, // Allow replying directly to the sender
+      replyTo: data.email,
       html: `
         <h2>New Contact Form Submission</h2>
         <p><strong>Name:</strong> ${data.name}</p>
