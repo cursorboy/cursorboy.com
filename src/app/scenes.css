@@ -1040,6 +1040,16 @@ html.intro-first .homeIndex {
   opacity: 1;
   transform: scale(1);
 }
+/* locally-bundled marks (AWS, scouts, red cross): inked by default, full
+   colour on hover — same bloom as the CDN logos */
+.skillLogoLocal {
+  filter: grayscale(1) brightness(0.22) contrast(1.05);
+  opacity: 0.82;
+}
+.skillTile:hover .skillLogoLocal {
+  filter: none;
+  opacity: 1;
+}
 .skillTileName {
   font-family: var(--font-mono);
   font-size: 0.6rem;

@@ -27,9 +27,12 @@ const ICON: Record<string, string> = {
   PostgreSQL: "postgresql",
   FFmpeg: "ffmpeg",
   OpenAI: "openai",
-  AWS: "amazonwebservices",
-  "AWS AI Practitioner": "amazonwebservices",
   Java: "openjdk",
+  // Local marks for brands Simple Icons no longer carries (trademark takedowns).
+  AWS: "/logos/aws.svg",
+  "AWS AI Practitioner": "/logos/aws.svg",
+  "Eagle Scout": "/logos/eagle-scout.svg",
+  "Red Cross CPR": "/logos/red-cross.svg",
 };
 
 const INK = "16130f"; // matches --ink
@@ -73,6 +76,7 @@ function Tile({ item }: { item: Item }) {
   }
 
   const hasLogo = !!item.slug && !broke;
+  const isLocal = !!item.slug?.startsWith("/");
 
   return (
     <motion.li
@@ -91,21 +95,34 @@ function Tile({ item }: { item: Item }) {
     >
       {hasLogo ? (
         <span className="skillTileMark" aria-hidden>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className="skillLogoMono"
-            src={`https://cdn.simpleicons.org/${item.slug}/${INK}`}
-            alt=""
-            loading="lazy"
-            onError={() => setBroke(true)}
-          />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className="skillLogoColor"
-            src={`https://cdn.simpleicons.org/${item.slug}`}
-            alt=""
-            loading="lazy"
-          />
+          {isLocal ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              className="skillLogoLocal"
+              src={item.slug}
+              alt=""
+              loading="lazy"
+              onError={() => setBroke(true)}
+            />
+          ) : (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                className="skillLogoMono"
+                src={`https://cdn.simpleicons.org/${item.slug}/${INK}`}
+                alt=""
+                loading="lazy"
+                onError={() => setBroke(true)}
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                className="skillLogoColor"
+                src={`https://cdn.simpleicons.org/${item.slug}`}
+                alt=""
+                loading="lazy"
+              />
+            </>
+          )}
         </span>
       ) : null}
       <span className="skillTileName">{item.name}</span>
