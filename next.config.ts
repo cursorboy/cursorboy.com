@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  experimental: {
+    // React <ViewTransition> for cinematic cross-route choreography.
+    viewTransition: true,
+  },
 };
 
 export default nextConfig;
