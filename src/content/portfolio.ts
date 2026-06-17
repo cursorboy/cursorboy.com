@@ -354,6 +354,63 @@ export const projects: Project[] = [
     stack: ["PyTorch", "FFmpeg", "Swift"],
     // image: "/work/sleep-vision.png",
   },
+  {
+    slug: "cyber-sim-lab",
+    index: "06",
+    category: "build",
+    title: "Cyber SimLab",
+    tagline: "Learn cybersecurity by living the incident — hands-on attack & defense simulations, not slideshows.",
+    year: "2025",
+    role: "Solo developer",
+    status: "shipped",
+    overview:
+      "One of my early builds, and the most on-brand one: a browser lab for actually learning security by doing it. Each scenario drops you into an interactive terminal with a timed, multi-step task list — examine the email headers, trace the intrusion, contain the ransomware — and teaches the concepts as you work, with difficulty tiers and progress that carry across sessions.",
+    highlights: [
+      "Six guided scenarios spanning beginner to advanced — phishing detection, network intrusion, ransomware response, privilege escalation, data exfiltration, and full incident response",
+      "Each runs in an interactive in-browser terminal with a countdown, a step-by-step task list, and clear learning objectives",
+      "Difficulty tiers and time estimates per scenario; accounts and a dashboard track completion across sessions",
+      "An AI assistant explains the why behind each move, backed by a curated resources hub",
+    ],
+    breakdown: [
+      {
+        step: "Pick a scenario",
+        detail:
+          "The lab opens on a grid of scenarios tagged by difficulty (Beginner → Advanced) and time estimate, each a self-contained route under /scenarios so new ones can be dropped in.",
+      },
+      {
+        step: "Drop into the terminal",
+        detail:
+          "Starting a scenario boots an interactive console — e.g. a CyberDefender email-security terminal — with a live countdown and a multi-step task list to work through.",
+      },
+      {
+        step: "Learn by doing",
+        detail:
+          "Tasks and learning objectives walk you through the real workflow — examine headers, flag indicators, classify, report — instead of multiple-choice quizzing.",
+      },
+      {
+        step: "Track progress",
+        detail:
+          "Auth, profiles, and a dashboard record completion so the lab works like a course you return to; an AI assistant and resources hub fill in the gaps.",
+      },
+    ],
+    metrics: [
+      { value: "6", label: "hands-on scenarios" },
+      { value: "3", label: "difficulty tiers" },
+      { value: "AI", label: "in-lab tutor" },
+    ],
+    stack: ["Next.js", "TypeScript", "Tailwind", "shadcn/ui", "LLM API"],
+    image: "/work/cybersimlab-1.png",
+    images: [
+      { src: "/work/cybersimlab-1.png", caption: "Master cybersecurity through simulation — the landing." },
+      { src: "/work/cybersimlab-2.png", caption: "Six training scenarios, each tagged by difficulty and time-to-complete." },
+      { src: "/work/cybersimlab-3.png", caption: "Inside a scenario: an interactive terminal, a timed task list, and learning objectives." },
+    ],
+    href: "https://cybersimlab.com",
+    cta: "cybersimlab.com",
+    links: [
+      { label: "GitHub", href: "https://github.com/cursorboy/Cyber-Sim-Lab" },
+    ],
+  },
 
   // ── Hackathon track (category: "mini") ────────────────────────────────────
   // Built fast, one sharp idea each. These live only on the reel (no full
@@ -626,10 +683,11 @@ export const skillsMarquee: string[] = [
 
 // ── Links ───────────────────────────────────────────────────────────────────
 export const links = [
-  { label: "GitHub", href: "https://github.com/" },
-  { label: "X", href: "https://x.com/" },
-  { label: "LinkedIn", href: "https://linkedin.com/" },
+  { label: "GitHub", href: "https://github.com/cursorboy" },
+  { label: "X", href: "https://x.com/cursorboydev" },
+  { label: "LinkedIn", href: "https://linkedin.com/in/piamparekh" },
   { label: "Email", href: "mailto:piamparekh17@gmail.com" },
+  { label: "Phone", href: "tel:+15105098139" },
 ];
 
 // ── Easter eggs (copy only — the behavior lives in the components) ────────────

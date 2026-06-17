@@ -292,9 +292,9 @@ export default function NameLetters() {
       morph = Math.abs(md) <= MSTEP ? morphTarget : morph + Math.sign(md) * MSTEP;
       if (raveT > 0) raveT -= 16;
 
-      // keep each ripple alive long enough for its slow front to sweep the name
+      // keep each ripple alive until its slow front has rolled off the screen
       for (let k = ripples.length - 1; k >= 0; k--) {
-        if (now - ripples[k].start > 10000) ripples.splice(k, 1);
+        if (now - ripples[k].start > 13000) ripples.splice(k, 1);
       }
 
       for (let i = 0; i < pts.length; i++) {
@@ -370,7 +370,9 @@ export default function NameLetters() {
           const front = ((now - rp.start) / 1000) * 150; // px/s — matches the bg
           if (rd > front) continue; // the wave hasn't reached this cursor yet
           rp.hit[i] = 1;
-          const fall = Math.max(0.3, 1 - rd / 1700);
+          // the shove weakens with radius, the same way the visible wave does —
+          // so a far-edge arrow gets the same gentle nudge the faint wave carries
+          const fall = Math.max(0.12, Math.exp(-rd * 0.0011));
           const a2 = Math.atan2(rdy, rdx) + (Math.random() - 0.5) * 1.7;
           const kick = rp.strength * (3 + Math.random() * 4) * fall;
           scvx[i] += Math.cos(a2) * kick;
@@ -459,9 +461,19 @@ export default function NameLetters() {
     function captureFrom() {
       for (let i = 0; i < pts.length; i++) {
         if (saying) {
+          // reconstruct each cursor's ACTUAL on-screen base position — including
+          // the perpendicular arc (bow) it's currently riding — so a re-target
+          // mid-flight continues from exactly where the cursor is, instead of
+          // snapping to the straight-line point along the old path.
           const sm = sayMp[i];
-          fromX[i] = fromX[i] + (shapeX[i] - fromX[i]) * sm;
-          fromY[i] = fromY[i] + (shapeY[i] - fromY[i]) * sm;
+          const fx = fromX[i];
+          const fy = fromY[i];
+          const sxv = shapeX[i] - fx;
+          const syv = shapeY[i] - fy;
+          const len = Math.hypot(sxv, syv) || 1;
+          const off = curve[i] * Math.sin(sm * Math.PI);
+          fromX[i] = fx + sxv * sm + (-syv / len) * off;
+          fromY[i] = fy + syv * sm + (sxv / len) * off;
         } else {
           fromX[i] = pts[i].x;
           fromY[i] = pts[i].y;

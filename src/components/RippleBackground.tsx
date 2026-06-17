@@ -54,7 +54,9 @@ float height(vec2 p){
     if(x < 0.0) continue;         // ahead of the front: undisturbed
     // a short packet: 1–2 oscillations that decay inward and fade over ~2s,
     // i.e. a stone dropped in the pond rather than a continuous wave train
-    float env = exp(-x * 0.013) * exp(-age * 0.85);
+    // amplitude fades as the ring SPREADS (by radius), not by time — so the wave
+    // never dies mid-screen; it travels until it has rolled off the edges
+    float env = exp(-x * 0.013) * exp(-front * 0.0011);
     h += r.w * 13.0 * sin(x * 0.058) * env;
   }
   return h;
@@ -185,7 +187,7 @@ export default function RippleBackground() {
     function frame(now: number) {
       // drop fully-decayed ripples (age > ~7s)
       for (let i = ripples.length - 1; i >= 0; i--) {
-        if (now - ripples[i].start > 7000) ripples.splice(i, 1);
+        if (now - ripples[i].start > 13000) ripples.splice(i, 1);
       }
       data.fill(0);
       const n = Math.min(ripples.length, MAX);
