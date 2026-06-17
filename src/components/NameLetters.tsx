@@ -69,6 +69,7 @@ export default function NameLetters() {
     let holdStart = 0;
     let lastMove = 0;
     let saying = false; // cutout is speaking → cursors hold the spoken text
+    let chatFast = false; // speech is a live chat reply → cursors form it faster
     let melting = false; // animating the spoken text back to the name
     let hushAt = 0;
     let shapeIdx = -1;
@@ -311,7 +312,10 @@ export default function NameLetters() {
           // say-morph: each cursor travels from where it currently is (fromX/Y)
           // to its slot in the spoken text along one arc → it "moves" to the
           // next thing instead of snapping.
-          sayMp[i] = Math.min(1, sayMp[i] + MSTEP * (speedMul[i] || 1) * 1.05);
+          sayMp[i] = Math.min(
+            1,
+            sayMp[i] + MSTEP * (speedMul[i] || 1) * (chatFast ? 2.7 : 1.05),
+          );
           const sm = sayMp[i];
           const fx = fromX[i];
           const fy = fromY[i];
@@ -502,6 +506,7 @@ export default function NameLetters() {
       captureFrom(); // start from wherever the cursors are right now
       loadText(text); // sets shapeX/shapeY/curve/speedMul + reports the box
       saying = true;
+      chatFast = true; // a chat reply — snap the cursors into it quicker
       melting = false;
     }
     function onHush() {
@@ -522,6 +527,7 @@ export default function NameLetters() {
       captureFrom();
       loadText(text, false);
       saying = true;
+      chatFast = false; // nav-hover spelling keeps the gentle pace
       melting = false;
     }
     let rt = 0;
