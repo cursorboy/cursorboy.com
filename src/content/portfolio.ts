@@ -526,6 +526,20 @@ export type Role = {
 
 export const experience: Role[] = [
   {
+    org: "Capture the Flag · Security",
+    title: "CTF Competitor & Security Tinkerer",
+    span: "2018 – Now", // EDIT — the year you started (you said age twelve)
+    note: "Breaking into things since I was twelve — CTFs are still where I think fastest.",
+    bullets: [
+      "Won my first capture-the-flag at twelve on HackTheBox — and never stopped.",
+      "EDIT — name specific CTF wins / podium finishes, your team, and the events (picoCTF, DEF CON quals, HTB, etc.).",
+      "EDIT — the categories you're strongest in: web exploitation, pwn / binary, crypto, reversing, forensics.",
+    ],
+    mono: "⚑",
+    current: true,
+    tags: ["CTF", "Web exploitation", "Reversing", "Pwn", "Crypto"],
+  },
+  {
     org: "UCSB Sigma Eta Pi",
     title: "President & Co-Founder",
     span: "Nov 2025 – Now",
@@ -641,6 +655,106 @@ export const experience: Role[] = [
     ],
     logo: "/logos/brains-motion.svg",
     tags: ["C++", "Arduino", "Python", "Robotics"],
+  },
+  {
+    org: "Boy Scouts of America",
+    title: "Eagle Scout",
+    span: "EDIT — year earned",
+    note: "Scouting's highest rank — where the leadership and the see-it-through habit started.",
+    bullets: [
+      "Earned Eagle Scout, the highest rank in Scouting. EDIT — add a number or two (merit badges earned, years in).",
+      "EDIT — describe your Eagle service project: what you built, who it served, and the team you led.",
+    ],
+    mono: "⚜",
+    tags: ["Leadership", "Eagle Scout", "Service"],
+  },
+];
+
+// ── Inspiration ──────────────────────────────────────────────────────────────
+// The moodboard scene — a wall of the art & design that moves me. Drop images in
+// /public/inspo/ and point `image` at them; a tile renders a graceful gradient +
+// monogram when the image is missing, so you can wire the words first and add the
+// art later. `kind` groups the wall and drives the filter pills.
+//
+// EDIT ME — these are strong starter references, leaning into this site's
+// kinetic / terminal aesthetic. KEEP what genuinely resonates, SWAP the rest for
+// the work you actually love, and rewrite the notes in your own voice.
+export type InspoKind = "web" | "motion" | "design" | "type" | "art" | "game";
+
+export type Inspiration = {
+  title: string; // the work, studio, person, or piece
+  by?: string; // who made it / where it lives
+  note?: string; // one honest line on why it moves you
+  image?: string; // /inspo/<x>.(jpg|png|webp) — optional
+  href?: string; // link out to the source
+  kind: InspoKind; // groups the wall + drives the filter pills
+  span?: 1 | 2; // 2 = let this tile run wide, a hero piece on the wall
+};
+
+export const inspirationKinds: { id: InspoKind; label: string }[] = [
+  { id: "web", label: "Web" },
+  { id: "motion", label: "Motion" },
+  { id: "design", label: "Design" },
+  { id: "type", label: "Type" },
+  { id: "art", label: "Art" },
+  { id: "game", label: "Game" },
+];
+
+export const inspirations: Inspiration[] = [
+  {
+    title: "Active Theory",
+    by: "activetheory.net",
+    note: "The bar for what a browser can feel like — physics, sound, weight in every interaction.",
+    href: "https://activetheory.net",
+    kind: "web",
+    span: 2,
+  },
+  {
+    title: "Lusion",
+    by: "lusion.co",
+    note: "WebGL that looks impossible until you scroll into it. Restraint plus showmanship.",
+    href: "https://lusion.co",
+    kind: "web",
+  },
+  {
+    title: "Refik Anadol",
+    by: "Data sculptures",
+    note: "Turning raw data into something you can stand inside. Machine hallucinations as art.",
+    href: "https://refikanadol.com",
+    kind: "art",
+    span: 2,
+  },
+  {
+    title: "Swiss / International Style",
+    by: "Müller-Brockmann",
+    note: "The grid as a moral position. Where my taste for mono type and hard alignment comes from.",
+    kind: "type",
+  },
+  {
+    title: "Demoscene 64k intros",
+    by: "pouet.net",
+    note: "Whole audiovisual worlds in 64 kilobytes. Hacker craft as pure art — my people.",
+    href: "https://www.pouet.net",
+    kind: "motion",
+  },
+  {
+    title: "TRON: Legacy",
+    by: "Aesthetic / score",
+    note: "The look that made the terminal feel like a place. Neon on black, forever.",
+    kind: "game",
+  },
+  {
+    title: "Teenage Engineering",
+    by: "teenage.engineering",
+    note: "Hardware that treats playfulness as engineering rigor. Every detail earns its place.",
+    href: "https://teenage.engineering",
+    kind: "design",
+  },
+  {
+    title: "Phreaking & terminal culture",
+    by: "ANSI / BBS art",
+    note: "Where cursorboy comes from — green text, blinking carets, beauty in constraint.",
+    kind: "art",
   },
 ];
 

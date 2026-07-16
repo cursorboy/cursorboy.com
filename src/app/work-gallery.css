@@ -1,0 +1,268 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   /work — the gallery
+   A calm, themed grid grouped into three parallel categories. No pinned scroll,
+   no 3D core. Each card carries its track colour (--g) and wakes on hover.
+─────────────────────────────────────────────────────────────────────────── */
+
+.scene-work {
+  min-height: 100dvh;
+}
+
+.gWrap {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding: clamp(5.5rem, 12vh, 8rem) var(--pad) clamp(6rem, 14vh, 9rem);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.gHead {
+  max-width: 46rem;
+  margin-bottom: clamp(3rem, 7vh, 5rem);
+}
+.gHead .eyebrow {
+  margin-bottom: 1rem;
+}
+.gTitle {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 8vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+.gLede {
+  margin-top: 1.4rem;
+  max-width: 38rem;
+  color: var(--ink-dim);
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+/* ── Chapter ─────────────────────────────────────────────────────────────── */
+.gChapter {
+  margin-top: clamp(3.5rem, 8vh, 6rem);
+}
+.gChapterHead {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  padding-bottom: 1.1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--line);
+}
+.gDot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--g);
+  align-self: center;
+  flex: none;
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--g) 18%, transparent);
+}
+.gChapterTitle {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.3rem, 2.4vw, 1.9rem);
+  letter-spacing: -0.03em;
+}
+.gChapterBlurb {
+  color: var(--ink-faint);
+  font-size: 0.8rem;
+  letter-spacing: 0.01em;
+}
+.gChapterCount {
+  margin-left: auto;
+  align-self: center;
+  color: var(--g);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 620px) {
+  .gChapterBlurb {
+    display: none;
+  }
+}
+
+/* ── Grid ────────────────────────────────────────────────────────────────── */
+.gGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: clamp(1.1rem, 2vw, 1.6rem);
+}
+
+/* ── Card ────────────────────────────────────────────────────────────────── */
+.gCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0.75rem 0.75rem 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--bg-2) 55%, transparent);
+  color: var(--ink);
+  isolation: isolate;
+  transition:
+    border-color 0.45s var(--ease),
+    background 0.45s var(--ease),
+    transform 0.45s var(--ease),
+    box-shadow 0.45s var(--ease);
+}
+.gCard[data-awake] {
+  border-color: color-mix(in oklab, var(--g) 55%, var(--line));
+  background: color-mix(in oklab, var(--g) 9%, var(--bg-2));
+  transform: translateY(-3px);
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--g) 30%, transparent),
+    0 18px 40px -28px color-mix(in oklab, var(--g) 70%, transparent);
+}
+.gCard[data-static] {
+  cursor: default;
+}
+
+/* screenshot frame */
+.gShot {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: 9px;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  margin-bottom: 1rem;
+}
+.gShotImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  opacity: 0;
+  transform: scale(1.015);
+  transition: opacity 0.6s var(--ease), transform 6s linear;
+}
+.gShotImg[data-on] {
+  opacity: 1;
+  transform: scale(1);
+}
+.gShot[data-empty] {
+  display: grid;
+  place-items: center;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 9px,
+      color-mix(in oklab, var(--g) 12%, transparent) 9px 10px
+    ),
+    color-mix(in oklab, var(--g) 6%, var(--bg));
+}
+.gShotMark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 2rem;
+  color: color-mix(in oklab, var(--g) 55%, var(--ink-faint));
+  letter-spacing: 0.04em;
+}
+.gShotDots {
+  position: absolute;
+  left: 0.6rem;
+  bottom: 0.6rem;
+  display: flex;
+  gap: 0.3rem;
+}
+.gShotDots i {
+  width: 0.32rem;
+  height: 0.32rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(2px);
+  transition: background 0.4s var(--ease), width 0.4s var(--ease);
+}
+.gShotDots i[data-on] {
+  width: 0.9rem;
+  border-radius: 0.32rem;
+  background: #fff;
+}
+
+/* meta + copy */
+.gMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 0.5rem;
+}
+.gName {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.gTagline {
+  margin-top: 0.45rem;
+  color: var(--ink-dim);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+.gStack {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.9rem;
+}
+.gStack li {
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  padding: 0.18rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+/* action */
+.gAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: auto;
+  padding-top: 1.1rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+.gArrow {
+  transition: transform 0.4s var(--ease);
+  color: var(--g);
+}
+.gCard[data-awake] .gArrow {
+  transform: translateX(4px);
+}
+.gCard[data-static] .gAction {
+  display: none;
+}
+
+/* keep focus visible for keyboard users */
+.gCard:focus-visible {
+  outline: 2px solid var(--g);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gShotImg {
+    transition: opacity 0.3s linear;
+    transform: none !important;
+  }
+  .gCard[data-awake] {
+    transform: none;
+  }
+}

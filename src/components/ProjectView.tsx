@@ -8,17 +8,17 @@ import { projects, projectBySlug } from "@/content/portfolio";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+// Transform/opacity-only reveals — no animated blur, so scroll stays smooth.
 const group: Variants = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.09, delayChildren: 0.3 } },
+  show: { transition: { staggerChildren: 0.08, delayChildren: 0.22 } },
 };
 const item: Variants = {
-  hidden: { opacity: 0, y: 18, filter: "blur(5px)" },
+  hidden: { opacity: 0, y: 16 },
   show: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
-    transition: { duration: 0.62, ease: EASE },
+    transition: { duration: 0.55, ease: EASE },
   },
 };
 
@@ -37,6 +37,12 @@ export default function ProjectView({ slug }: { slug: string }) {
   );
   const hero = shots[0];
   const rest = shots.slice(1);
+
+  // Every way to actually try / dig into the project, in one row. The live site
+  // is primary; demo videos, source, and Devpost follow as secondary actions.
+  const actions: { label: string; href: string; primary: boolean }[] = [];
+  if (p.href) actions.push({ label: p.cta ?? "Visit live", href: p.href, primary: true });
+  for (const l of p.links ?? []) actions.push({ label: l.label, href: l.href, primary: false });
 
   return (
     <ViewTransition
@@ -58,7 +64,7 @@ export default function ProjectView({ slug }: { slug: string }) {
           <article className="pjDetail">
             <motion.div variants={group} initial="hidden" animate="show">
               <motion.p className="eyebrow pjDetailEyebrow" variants={item}>
-                {p.role} · {p.year}
+                {[p.role, p.year, p.status].filter(Boolean).join(" · ")}
               </motion.p>
               <motion.h1
                 className="pjTitle pjDetailTitle"
@@ -74,6 +80,35 @@ export default function ProjectView({ slug }: { slug: string }) {
                 <motion.p className="pjDetailOverview" variants={item}>
                   {p.overview}
                 </motion.p>
+              )}
+
+              {/* actions — try it live, watch the demo, read the source */}
+              {actions.length > 0 && (
+                <motion.div className="pjActions" variants={item}>
+                  {actions.map((a) =>
+                    a.primary ? (
+                      <MagneticLink
+                        key={a.href}
+                        href={a.href}
+                        className="pjVisit"
+                        strength={0.3}
+                        external
+                      >
+                        {a.label} <span aria-hidden>↗</span>
+                      </MagneticLink>
+                    ) : (
+                      <a
+                        key={a.href}
+                        href={a.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="pjLink"
+                      >
+                        {a.label} <span aria-hidden>↗</span>
+                      </a>
+                    )
+                  )}
+                </motion.div>
               )}
             </motion.div>
 
@@ -93,36 +128,28 @@ export default function ProjectView({ slug }: { slug: string }) {
               </motion.ul>
             )}
 
-            <motion.div
-              className="pjDetailFoot"
-              variants={item}
-              initial="hidden"
-              animate="show"
-            >
-              <ul className="pjStackChips">
-                {p.stack?.map((s) => (
-                  <li key={s}>{s}</li>
-                ))}
-              </ul>
-              {p.href && (
-                <MagneticLink
-                  href={p.href}
-                  className="pjVisit"
-                  strength={0.3}
-                  external
-                >
-                  {p.cta ?? "Visit"} <span aria-hidden>↗</span>
-                </MagneticLink>
-              )}
-            </motion.div>
+            {p.stack && p.stack.length > 0 && (
+              <motion.div
+                className="pjDetailFoot"
+                variants={item}
+                initial="hidden"
+                animate="show"
+              >
+                <ul className="pjStackChips">
+                  {p.stack.map((s) => (
+                    <li key={s}>{s}</li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
           </article>
 
           {hero && (
             <motion.figure
               className="pjHeroShot"
-              initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{ duration: 0.9, delay: 0.25, ease: EASE }}
+              initial={{ opacity: 0, y: 32 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.75, delay: 0.2, ease: EASE }}
             >
               <div className="pjShotBar" aria-hidden>
                 <i />
@@ -137,15 +164,34 @@ export default function ProjectView({ slug }: { slug: string }) {
           )}
         </div>
 
+        {/* the numbers — punchy stats, finally on the page */}
+        {p.metrics && p.metrics.length > 0 && (
+          <section className="pjMetrics" aria-label="By the numbers">
+            {p.metrics.map((m, idx) => (
+              <motion.div
+                className="pjMetric"
+                key={m.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-10% 0px" }}
+                transition={{ duration: 0.55, delay: idx * 0.07, ease: EASE }}
+              >
+                <span className="pjMetricVal">{m.value}</span>
+                <span className="pjMetricLbl">{m.label}</span>
+              </motion.div>
+            ))}
+          </section>
+        )}
+
         {/* technical breakdown — how it actually works */}
         {p.breakdown && p.breakdown.length > 0 && (
           <section className="pjHow" aria-label="How it works">
             <motion.p
               className="eyebrow pjHowEyebrow"
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-15% 0px" }}
-              transition={{ duration: 0.6, ease: EASE }}
+              transition={{ duration: 0.5, ease: EASE }}
             >
               how it works
             </motion.p>
@@ -154,10 +200,10 @@ export default function ProjectView({ slug }: { slug: string }) {
                 <motion.li
                   className="pjStep"
                   key={b.step}
-                  initial={{ opacity: 0, y: 24 }}
+                  initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-12% 0px" }}
-                  transition={{ duration: 0.6, delay: idx * 0.05, ease: EASE }}
+                  transition={{ duration: 0.5, delay: idx * 0.04, ease: EASE }}
                 >
                   <span className="pjStepNum">{String(idx + 1).padStart(2, "0")}</span>
                   <div className="pjStepBody">
@@ -178,10 +224,10 @@ export default function ProjectView({ slug }: { slug: string }) {
               <motion.figure
                 className="pjShot"
                 key={s.src}
-                initial={{ opacity: 0, y: 70, scale: 0.965, filter: "blur(8px)" }}
-                whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                initial={{ opacity: 0, y: 56, scale: 0.975 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, margin: "-18% 0px -12% 0px" }}
-                transition={{ duration: 0.9, ease: EASE }}
+                transition={{ duration: 0.7, ease: EASE }}
               >
                 <div className="pjShotBar" aria-hidden>
                   <i />
@@ -200,6 +246,28 @@ export default function ProjectView({ slug }: { slug: string }) {
           </section>
         )}
 
+        {/* up next — a deliberate step to the next chapter */}
+        <motion.section
+          className="pjNext"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-20% 0px" }}
+          transition={{ duration: 0.55, ease: EASE }}
+        >
+          <Link
+            href={`/work/${next.slug}`}
+            className="pjNextLink"
+            transitionTypes={["nav-forward"]}
+          >
+            <span className="pjNextKick">up next · chapter {next.index}</span>
+            <span className="pjNextTitle">{next.title}</span>
+            <span className="pjNextTagline">{next.tagline}</span>
+            <span className="pjNextArrow" aria-hidden>
+              →
+            </span>
+          </Link>
+        </motion.section>
+
         <nav className="sceneRail" data-ui>
           <Link href="/work" className="railLink" transitionTypes={["nav-back"]}>
             <span className="railArrow" aria-hidden>
@@ -213,17 +281,6 @@ export default function ProjectView({ slug }: { slug: string }) {
             <span className="railSlash"> / </span>
             {String(builds.length).padStart(2, "0")}
           </span>
-
-          <Link
-            href={`/work/${next.slug}`}
-            className="railLink railNext"
-            transitionTypes={["nav-forward"]}
-          >
-            <span className="railLabel">{next.title}</span>
-            <span className="railArrow" aria-hidden>
-              →
-            </span>
-          </Link>
         </nav>
 
         <span className="sceneKicker" aria-hidden>

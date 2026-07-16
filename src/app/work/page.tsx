@@ -1,12 +1,11 @@
-import WorkReel from "@/components/WorkReel";
+import WorkIndex from "@/components/WorkIndex";
 
 /**
- * Work — "The Reel". A pinned horizontal film of every project: vertical scroll
- * scrubs the strip sideways past a persistent Three.js core, projects are
- * grouped into chapters (Main · Hackathon · Design), and hovering one cycles
- * its real screenshots while flooding the page with its accent. Builds morph
- * into their full case study at /work/[slug].
+ * Work — "The Index": a quiet, readable catalog of everything Piam has made,
+ * grouped into honest sections (Products · Hackathons · Organizations ·
+ * Interfaces). One flourish: a screenshot peek that trails the cursor. Builds
+ * morph into their full case study at /work/[slug].
  */
 export default function WorkPage() {
-  return <WorkReel />;
+  return <WorkIndex />;
 }

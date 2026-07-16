@@ -1778,7 +1778,7 @@ html.intro-first .homeIndex {
   overflow: hidden;
   background: var(--bg-2);
   box-shadow: 0 40px 80px -36px rgba(0, 0, 0, 0.45);
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity;
 }
 .pjShotBar {
   display: flex;
@@ -1859,17 +1859,149 @@ html.intro-first .homeIndex {
   border-color: var(--accent);
 }
 
-/* clicked gallery title morphs into the detail hero */
-::view-transition-group(project-hero) {
-  animation-duration: 520ms;
+/* ── Actions — try it live, watch the demo, read the source ───────────────── */
+.pjActions {
+  margin-top: clamp(1.6rem, 4vw, 2.4rem);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem 1.4rem;
 }
-::view-transition-image-pair(project-hero) {
-  animation-name: pj-morph-blur;
+.pjActions .pjVisit {
+  margin: 0;
 }
-@keyframes pj-morph-blur {
-  35% {
-    filter: blur(4px);
+.pjLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-dim);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  transition:
+    color 0.3s var(--ease),
+    border-color 0.3s var(--ease),
+    background 0.3s var(--ease);
+}
+.pjLink:hover {
+  color: var(--ink);
+  border-color: var(--ink-dim);
+  background: color-mix(in oklab, var(--ink) 5%, transparent);
+}
+
+/* ── By the numbers — the metrics band (finally shown) ────────────────────── */
+.pjMetrics {
+  margin: clamp(3.5rem, 9vw, 6rem) auto 0;
+  width: 100%;
+  max-width: 860px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: clamp(1rem, 3vw, 2rem);
+  padding: clamp(1.8rem, 4vw, 2.6rem) 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.pjMetric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.pjMetricVal {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.1rem, 6vw, 3.4rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+.pjMetricLbl {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  text-wrap: pretty;
+}
+@media (max-width: 560px) {
+  .pjMetrics {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
   }
+}
+
+/* ── Up next — a deliberate step into the next chapter ────────────────────── */
+.pjNext {
+  margin: clamp(4rem, 11vw, 8rem) auto 0;
+  width: 100%;
+  max-width: 860px;
+}
+.pjNextLink {
+  position: relative;
+  display: block;
+  padding: clamp(1.8rem, 5vw, 3rem);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--bg-2);
+  color: var(--ink);
+  text-decoration: none;
+  overflow: hidden;
+  transition:
+    border-color 0.4s var(--ease),
+    background 0.4s var(--ease),
+    transform 0.4s var(--ease);
+}
+@media (hover: hover) {
+  .pjNextLink:hover {
+    border-color: var(--ink-dim);
+    background: color-mix(in oklab, var(--ink) 4%, var(--bg-2));
+    transform: translateY(-2px);
+  }
+  .pjNextLink:hover .pjNextArrow {
+    transform: translateX(6px);
+  }
+}
+.pjNextKick {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.pjNextTitle {
+  display: block;
+  margin-top: 0.7rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.pjNextTagline {
+  display: block;
+  margin-top: 0.8rem;
+  max-width: 52ch;
+  color: var(--ink-dim);
+  font-size: clamp(0.95rem, 1.6vw, 1.1rem);
+  line-height: 1.5;
+}
+.pjNextArrow {
+  position: absolute;
+  top: clamp(1.8rem, 5vw, 3rem);
+  right: clamp(1.8rem, 5vw, 3rem);
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  color: var(--ink-dim);
+  transition: transform 0.4s var(--ease);
+}
+
+/* clicked gallery title morphs into the detail hero (opacity crossfade) */
+::view-transition-group(project-hero) {
+  animation-duration: 480ms;
 }
 
 /* ── Projects — immersive showcase (/work) ────────────────────────────────── */
@@ -2332,11 +2464,135 @@ html.intro-first .homeIndex {
   background: color-mix(in srgb, var(--cat, var(--ink)) 12%, transparent);
 }
 
-.wheelBody {
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
+/* ── horizontal project rail ──────────────────────────────────────────────── */
+.wheelRailWrap {
+  position: relative;
+  width: 100%;
+}
+.wheelRail {
+  --cw: clamp(190px, 56vw, 264px);
+  display: flex;
+  gap: clamp(0.8rem, 2vw, 1.4rem);
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-snap-type: x mandatory;
+  /* let the first & last card reach dead centre */
+  padding-inline: calc(50% - var(--cw) / 2);
+  padding-block: clamp(2.6rem, 5vh, 3.6rem);
+  scroll-padding-inline: calc(50% - var(--cw) / 2);
+  outline: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  /* fade the strip into the page at both edges */
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+}
+.wheelRail::-webkit-scrollbar {
+  display: none;
+}
+.railCard {
+  flex: 0 0 var(--cw);
+  width: var(--cw);
+  height: clamp(190px, 26vw, 250px);
+  scroll-snap-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  text-align: left;
+  padding: clamp(1rem, 2.4vw, 1.4rem);
+  border-radius: 6px;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--bg) 70%, #b89a66 30%);
+  border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  color: var(--ink);
+  /* resting: shrunk back & dimmed so the active card dominates */
+  opacity: 0.4;
+  filter: saturate(0.5);
+  transform: scale(0.82);
+  transform-origin: center bottom;
+  box-shadow: 0 2px 6px -3px rgba(46, 34, 16, 0.3);
+  transition: transform 0.42s var(--ease), opacity 0.42s var(--ease),
+    filter 0.42s var(--ease), box-shadow 0.42s var(--ease),
+    border-color 0.42s var(--ease), background 0.42s var(--ease);
+  will-change: transform, opacity;
+}
+.railCard:hover {
+  opacity: 0.68;
+  transform: scale(0.88);
+}
+/* THE highlight — the active card pops forward, colours up, and towers over the
+   dimmed strip around it */
+.railCard.is-active {
+  opacity: 1;
+  filter: none;
+  transform: scale(1.12);
+  cursor: default;
+  background: color-mix(in srgb, var(--bg) 80%, var(--cat) 20%);
+  border-color: var(--cat);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--cat) 55%, transparent),
+    0 26px 44px -18px color-mix(in srgb, var(--cat) 55%, rgba(46, 34, 16, 0.6));
+}
+.railCardBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 6px 6px 0 0;
+  background: color-mix(in srgb, var(--ink) 16%, transparent);
+  transition: background 0.42s var(--ease), height 0.42s var(--ease);
+}
+.railCard.is-active .railCardBar {
+  height: 7px;
+  background: var(--cat);
+}
+.railCardTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+.railCardIdx {
+  font-weight: 600;
+  color: var(--ink-dim);
+}
+.railCardName {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.railCardCat {
+  display: inline-flex;
   align-items: center;
-  gap: clamp(1.5rem, 5vw, 4rem);
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
 }
 
 .wheelStage {
@@ -2515,10 +2771,9 @@ html.intro-first .homeIndex {
   opacity: 0.5;
 }
 .wheelHint {
-  position: absolute;
-  left: 50%;
-  bottom: 0.4rem;
-  transform: translateX(-50%);
+  display: block;
+  text-align: center;
+  margin-top: 0.4rem;
   font-family: var(--font-mono);
   font-size: 0.62rem;
   letter-spacing: 0.18em;
@@ -2526,11 +2781,25 @@ html.intro-first .homeIndex {
   color: var(--ink-faint);
   opacity: 0.7;
   pointer-events: none;
-  z-index: 5;
 }
 
 .wheelDetail {
   min-width: 0;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+.wheelDetail .wheelDetailKicker,
+.wheelDetail .wheelDetailMetrics,
+.wheelDetail .wheelDetailStack,
+.wheelDetail .wheelDetailActions {
+  justify-content: center;
+}
+.wheelDetail .wheelDetailTagline,
+.wheelDetail .wheelDetailOverview {
+  margin-left: auto;
+  margin-right: auto;
 }
 .wheelDetailKicker {
   display: inline-flex;
@@ -2629,15 +2898,8 @@ html.intro-first .homeIndex {
 }
 
 @media (max-width: 900px) {
-  .wheelBody {
-    grid-template-columns: 1fr;
-    gap: clamp(1.2rem, 5vw, 2rem);
-  }
-  .wheelStage {
-    height: clamp(300px, 48vh, 440px);
-  }
-  .wheelNav {
-    right: 0.3rem;
+  .wheelRail {
+    --cw: clamp(170px, 72vw, 240px);
   }
   .wheelDetailTagline {
     max-width: none;
@@ -2922,5 +3184,216 @@ html.intro-first .homeIndex {
   .chromeStamp,
   .sceneKicker {
     display: none;
+  }
+}
+
+/* ── Inspiration · the moodboard wall ───────────────────────────────────────── */
+.inspoScene {
+  width: 100%;
+}
+.inspoHead {
+  max-width: 46ch;
+  margin-bottom: clamp(1.6rem, 4vw, 2.4rem);
+}
+.inspoEyebrow {
+  margin-bottom: clamp(1rem, 3vw, 1.6rem);
+}
+.inspoTitle {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 6vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+.inspoLede {
+  margin-top: 0.9rem;
+  max-width: 52ch;
+  color: var(--ink-dim);
+  font-size: clamp(0.92rem, 1.6vw, 1.02rem);
+  line-height: 1.55;
+}
+
+/* filter pills */
+.inspoFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: clamp(1.6rem, 4vw, 2.6rem);
+}
+.inspoPill {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  color: var(--ink-dim);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 0.42rem 0.9rem;
+  cursor: pointer;
+  transition: color 0.35s var(--ease), border-color 0.35s var(--ease),
+    background-color 0.35s var(--ease);
+}
+.inspoPill:hover {
+  color: var(--ink);
+  border-color: var(--ink-faint);
+}
+.inspoPill.is-on {
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* the wall */
+.inspoWall {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-flow: dense;
+  gap: clamp(0.9rem, 2vw, 1.4rem);
+}
+.inspoTile {
+  min-width: 0;
+}
+.inspoTile.is-wide {
+  grid-column: span 2;
+}
+
+/* per-kind accent — gives the wall colour variety */
+.inspoTile {
+  --k: var(--accent);
+}
+.inspoTile[data-kind="web"] {
+  --k: #4f8a7b;
+}
+.inspoTile[data-kind="motion"] {
+  --k: #c2703d;
+}
+.inspoTile[data-kind="design"] {
+  --k: #9b6bb0;
+}
+.inspoTile[data-kind="type"] {
+  --k: #6b6453;
+}
+.inspoTile[data-kind="art"] {
+  --k: #b0863d;
+}
+.inspoTile[data-kind="game"] {
+  --k: #3d6bb0;
+}
+
+.inspoCard {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg-2);
+  overflow: hidden;
+  transition: transform 0.5s var(--ease), border-color 0.5s var(--ease),
+    box-shadow 0.5s var(--ease);
+}
+a.inspoCard:hover {
+  transform: translateY(-5px);
+  border-color: color-mix(in srgb, var(--k) 60%, var(--line));
+  box-shadow: 0 26px 55px -30px rgba(0, 0, 0, 0.55);
+}
+
+.inspoMedia {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      120% 120% at 25% 12%,
+      color-mix(in srgb, var(--k) 26%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(
+      150deg,
+      color-mix(in srgb, var(--k) 14%, var(--bg)),
+      var(--bg-2)
+    );
+}
+.inspoTile.is-wide .inspoMedia {
+  aspect-ratio: 16 / 8;
+}
+.inspoMedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s var(--ease);
+}
+a.inspoCard:hover .inspoMedia img {
+  transform: scale(1.04);
+}
+.inspoMono {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  line-height: 1;
+  color: color-mix(in srgb, var(--k) 70%, var(--ink));
+  opacity: 0.55;
+}
+
+.inspoMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+  padding: clamp(0.85rem, 2vw, 1.15rem);
+}
+.inspoKind {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--k);
+}
+.inspoName {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1rem, 2vw, 1.18rem);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.inspoBy {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+}
+.inspoNote {
+  margin-top: 0.2rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--ink-dim);
+}
+.inspoLink {
+  margin-top: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--k);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+}
+a.inspoCard:hover .inspoLink {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+@media (max-width: 900px) {
+  .inspoWall {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .inspoWall {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .inspoTile.is-wide {
+    grid-column: span 1;
   }
 }

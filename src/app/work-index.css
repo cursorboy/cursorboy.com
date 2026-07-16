@@ -1,0 +1,328 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   /work — The Index
+   A quiet, readable catalog. One column, grouped into honest sections. The only
+   flourish is the cursor peek (.ixPeek) that trails the pointer. No reel, no 3D.
+─────────────────────────────────────────────────────────────────────────── */
+
+.scene-work {
+  min-height: 100dvh;
+}
+
+.ixWrap {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 60rem;
+  margin-inline: auto;
+  padding: clamp(5.5rem, 12vh, 8rem) var(--pad) clamp(6rem, 14vh, 9rem);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.ixHead {
+  max-width: 42rem;
+  margin-bottom: clamp(2.75rem, 6vh, 4.5rem);
+}
+.ixHead .eyebrow {
+  margin-bottom: 1rem;
+}
+.ixTitle {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 8vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+.ixLede {
+  margin-top: 1.4rem;
+  max-width: 34rem;
+  color: var(--ink-dim);
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+/* ── Section ─────────────────────────────────────────────────────────────── */
+.ixSection {
+  margin-top: clamp(2.75rem, 6vh, 4.5rem);
+}
+.ixSectionHead {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  padding-bottom: 0.9rem;
+  margin-bottom: 0.4rem;
+  border-bottom: 1px solid var(--line);
+}
+.ixKicker {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.ixSectionTitle {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  letter-spacing: -0.03em;
+}
+.ixSectionNote {
+  color: var(--ink-faint);
+  font-size: 0.8rem;
+  letter-spacing: 0.01em;
+}
+.ixSectionCount {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 620px) {
+  .ixSectionNote {
+    display: none;
+  }
+}
+
+/* ── List + rows ─────────────────────────────────────────────────────────── */
+.ixList {
+  list-style: none;
+}
+.ixRow {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.4rem 1fr auto;
+  align-items: baseline;
+  gap: 0 1.1rem;
+  padding: 1.15rem 0.9rem 1.15rem 0.6rem;
+  border-bottom: 1px solid color-mix(in oklab, var(--line) 60%, transparent);
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    background 0.4s var(--ease),
+    padding-left 0.4s var(--ease),
+    color 0.4s var(--ease);
+}
+.ixRow[data-static] {
+  cursor: default;
+}
+/* the caret-rail that grows on the left as a row wakes (cursor motif) */
+.ixRow::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  background: var(--ink);
+  transform: translateY(-50%);
+  transition: height 0.4s var(--ease);
+}
+@media (hover: hover) {
+  .ixRow:hover {
+    background: color-mix(in oklab, var(--ink) 5%, transparent);
+    padding-left: 1.4rem;
+  }
+  .ixRow:hover::before {
+    height: 1.6rem;
+  }
+}
+.ixRow:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.ixIndex {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  padding-top: 0.15rem;
+}
+
+.ixBody {
+  min-width: 0;
+}
+.ixNameRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+}
+.ixName {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.ixRight {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+.ixDesc {
+  display: block;
+  margin-top: 0.4rem;
+  max-width: 40rem;
+  color: var(--ink-dim);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+/* ── Lead (build) rows — bigger, with a stat teaser ──────────────────────── */
+.ixRow--lead {
+  padding-top: 1.45rem;
+  padding-bottom: 1.45rem;
+}
+.ixRow--lead .ixName {
+  font-size: clamp(1.35rem, 2.6vw, 1.85rem);
+}
+.ixStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.4rem;
+  margin-top: 0.8rem;
+}
+.ixStat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.ixStatVal {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.98rem;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.ixStatLbl {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+/* the appendix reads a touch quieter than the chapters */
+.ixSection--appendix {
+  margin-top: clamp(3.5rem, 8vh, 5.5rem);
+}
+.ixSection--appendix .ixName {
+  font-size: clamp(1.05rem, 1.9vw, 1.3rem);
+}
+
+.ixAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  align-self: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  white-space: nowrap;
+  transition: color 0.4s var(--ease);
+}
+.ixRow[data-static] .ixActionLabel {
+  opacity: 0.5;
+}
+.ixArrow {
+  display: inline-block;
+  transition: transform 0.4s var(--ease);
+}
+@media (hover: hover) {
+  .ixRow:hover .ixAction {
+    color: var(--ink);
+  }
+  .ixRow:hover .ixArrow {
+    transform: translateX(4px);
+  }
+  .ixRow[data-static]:hover .ixArrow {
+    transform: none;
+  }
+}
+
+/* hide the row count / right rail gracefully on narrow screens */
+@media (max-width: 560px) {
+  .ixRow {
+    grid-template-columns: 1.9rem 1fr;
+  }
+  .ixAction {
+    grid-column: 2;
+    margin-top: 0.5rem;
+  }
+}
+
+/* ── Cursor peek ─────────────────────────────────────────────────────────── */
+.ixPeek {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  width: 17rem;
+  pointer-events: none;
+  opacity: 0;
+  transform-origin: top left;
+  transition: opacity 0.32s var(--ease);
+  will-change: transform, opacity;
+}
+.ixPeek[data-on] {
+  opacity: 1;
+}
+.ixPeekImg {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.55);
+  animation: ixPeekIn 0.5s var(--ease);
+}
+.ixPeekTag {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+@keyframes ixPeekIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ixRow,
+  .ixArrow,
+  .ixRow::before {
+    transition: none;
+  }
+  .ixPeek {
+    display: none;
+  }
+}
+/* no cursor peek on touch — it's a pointer affordance */
+@media (hover: none) {
+  .ixPeek {
+    display: none;
+  }
+}

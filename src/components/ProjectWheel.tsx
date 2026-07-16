@@ -2,15 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import {
-  motion,
-  AnimatePresence,
-  animate,
-  useMotionValue,
-  useTransform,
-  type MotionStyle,
-  type MotionValue,
-} from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   projects,
   projectCategories,
@@ -18,12 +10,11 @@ import {
   type ProjectCategory,
 } from "@/content/portfolio";
 
-/* The work wheel — a 3D Rolodex of project cards on a vertical cylinder. Spin it
-   by dragging, scrolling over it, clicking a card, or the ▲▼ keys; the front
-   card is "active" and its story shows alongside. Category chips colour-code and
-   filter the wheel so builds, minis, and design work share one object. */
-
-const STEP = 40; // scroll units between adjacent cards in the drawer
+/* The work rail — a horizontal filmstrip of project cards. Scroll sideways at
+   native speed (trackpad swipe, or the mouse wheel translated 1:1), or click any
+   card to center it. The centred card is "active": it pops forward, colours up,
+   and its full story reads in the panel below. Category chips colour-code and
+   filter the strip. */
 
 type Filter = "all" | ProjectCategory;
 
@@ -34,104 +25,92 @@ const FILTERS: { key: Filter; label: string }[] = [
   { key: "design", label: projectCategories.design.label },
 ];
 
-// staggered tab columns so every tab pokes out and stays visible, like the
-// cut tabs in a real card index / filing drawer. colour still encodes category.
-const TAB_COLS = ["8%", "30.5%", "53%", "75.5%"];
-
 export default function ProjectWheel() {
   const [filter, setFilter] = useState<Filter>("all");
   const items = useMemo(
-    () => (filter === "all" ? projects : projects.filter((p) => p.category === filter)),
+    () =>
+      filter === "all"
+        ? projects
+        : projects.filter((p) => p.category === filter),
     [filter],
   );
 
-  const stageRef = useRef<HTMLDivElement>(null);
-  const ringRot = useMotionValue(0); // scrub; front card index = -ringRot/STEP
+  const railRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [active, setActive] = useState(0);
-
-  // responsive card geometry, measured from the stage width
-  const [dim, setDim] = useState({ cardW: 380, cardH: 228 });
-  useEffect(() => {
-    const el = stageRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() => {
-      const w = el.clientWidth;
-      // tall file-card stock
-      const cardW = Math.min(400, Math.max(228, w * 0.78));
-      const cardH = Math.round(cardW * 0.6);
-      setDim({ cardW: Math.round(cardW), cardH });
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
   const N = items.length;
-  const minRot = -(N - 1) * STEP;
-  const clampRot = (v: number) => Math.min(0, Math.max(minRot, v));
 
-  // keep `active` in lockstep with the wheel as it turns
+  // active = the card whose centre is nearest the rail's centre, updated as you
+  // scroll so the highlight always tracks the strip.
   useEffect(() => {
-    const unsub = ringRot.on("change", (v) => {
-      const idx = Math.min(N - 1, Math.max(0, Math.round(-v / STEP)));
-      setActive((cur) => (cur === idx ? cur : idx));
-    });
-    return unsub;
-  }, [ringRot, N]);
-
-  function snap() {
-    const idx = Math.min(N - 1, Math.max(0, Math.round(-ringRot.get() / STEP)));
-    animate(ringRot, -idx * STEP, { type: "spring", stiffness: 130, damping: 18 });
-  }
-  function goTo(idx: number) {
-    const clamped = Math.min(N - 1, Math.max(0, idx));
-    animate(ringRot, -clamped * STEP, { type: "spring", stiffness: 150, damping: 19 });
-  }
-
-  // scroll-to-spin (non-passive so we can keep the page still while over the wheel)
-  useEffect(() => {
-    const el = stageRef.current;
-    if (!el) return;
-    let t: ReturnType<typeof setTimeout>;
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      ringRot.set(clampRot(ringRot.get() - e.deltaY * 0.16));
-      clearTimeout(t);
-      t = setTimeout(snap, 110);
+    const rail = railRef.current;
+    if (!rail) return;
+    let raf = 0;
+    const update = () => {
+      const mid = rail.scrollLeft + rail.clientWidth / 2;
+      let best = 0;
+      let bestD = Infinity;
+      for (let i = 0; i < cardRefs.current.length; i++) {
+        const c = cardRefs.current[i];
+        if (!c) continue;
+        const center = c.offsetLeft + c.offsetWidth / 2;
+        const d = Math.abs(center - mid);
+        if (d < bestD) {
+          bestD = d;
+          best = i;
+        }
+      }
+      setActive((cur) => (cur === best ? cur : best));
     };
-    el.addEventListener("wheel", onWheel, { passive: false });
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(update);
+    };
+    rail.addEventListener("scroll", onScroll, { passive: true });
+    update();
     return () => {
-      el.removeEventListener("wheel", onWheel);
-      clearTimeout(t);
+      rail.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [N]);
+  }, [N, filter]);
 
-  // drag-to-spin
-  const dragging = useRef(false);
-  const lastY = useRef(0);
-  function onPointerDown(e: React.PointerEvent) {
-    dragging.current = true;
-    lastY.current = e.clientY;
-    ringRot.stop();
-    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
-  }
-  function onPointerMove(e: React.PointerEvent) {
-    if (!dragging.current) return;
-    const dy = e.clientY - lastY.current;
-    lastY.current = e.clientY;
-    ringRot.set(clampRot(ringRot.get() + dy * 0.34));
-  }
-  function onPointerUp() {
-    if (!dragging.current) return;
-    dragging.current = false;
-    snap();
+  // mouse wheel → horizontal scroll at normal (1:1) speed; release at either end
+  // so the page keeps scrolling instead of trapping the wheel.
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const onWheel = (e: WheelEvent) => {
+      const delta =
+        Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (!delta) return;
+      const atStart = rail.scrollLeft <= 0;
+      const atEnd =
+        rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 1;
+      if ((delta < 0 && atStart) || (delta > 0 && atEnd)) return;
+      e.preventDefault();
+      rail.scrollLeft += delta;
+    };
+    rail.addEventListener("wheel", onWheel, { passive: false });
+    return () => rail.removeEventListener("wheel", onWheel);
+  }, [N, filter]);
+
+  function goTo(idx: number) {
+    const i = Math.min(N - 1, Math.max(0, idx));
+    setActive(i);
+    cardRefs.current[i]?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest",
+    });
   }
 
   function pickFilter(f: Filter) {
     if (f === filter) return;
     setFilter(f);
     setActive(0);
-    ringRot.set(0);
+    requestAnimationFrame(() =>
+      railRef.current?.scrollTo({ left: 0, behavior: "auto" }),
+    );
   }
 
   const current = items[Math.min(active, N - 1)];
@@ -140,7 +119,11 @@ export default function ProjectWheel() {
     <div className="wheel">
       <header className="wheelHead">
         <p className="eyebrow">selected work</p>
-        <div className="wheelFilters" role="tablist" aria-label="Filter projects">
+        <div
+          className="wheelFilters"
+          role="tablist"
+          aria-label="Filter projects"
+        >
           {FILTERS.map((f) => {
             const color =
               f.key === "all" ? undefined : projectCategories[f.key].color;
@@ -152,7 +135,9 @@ export default function ProjectWheel() {
                 aria-selected={on}
                 className={`wheelChip${on ? " is-on" : ""}`}
                 onClick={() => pickFilter(f.key)}
-                style={color ? ({ ["--cat"]: color } as React.CSSProperties) : undefined}
+                style={
+                  color ? ({ ["--cat"]: color } as React.CSSProperties) : undefined
+                }
               >
                 {f.key !== "all" && <span className="wheelChipDot" aria-hidden />}
                 {f.label}
@@ -162,135 +147,76 @@ export default function ProjectWheel() {
         </div>
       </header>
 
-      <div className="wheelBody">
-        {/* the spinning cylinder */}
+      {/* the horizontal strip */}
+      <div className="wheelRailWrap">
         <div
-          className="wheelStage"
-          ref={stageRef}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerLeave={onPointerUp}
-          tabIndex={0}
+          className="wheelRail"
+          ref={railRef}
           role="listbox"
-          aria-label="Project wheel"
+          aria-label="Projects"
+          tabIndex={0}
           onKeyDown={(e) => {
-            if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+            if (e.key === "ArrowRight" || e.key === "ArrowDown") {
               e.preventDefault();
               goTo(active + 1);
-            } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+            } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
               e.preventDefault();
               goTo(active - 1);
             }
           }}
         >
-          <div className="wheelRing">
-            {items.map((p, i) => (
-              <Card
+          {items.map((p, i) => {
+            const cat = projectCategories[p.category];
+            const on = i === active;
+            return (
+              <button
                 key={p.slug}
-                p={p}
-                i={i}
-                dim={dim}
-                ringRot={ringRot}
-                active={i === active}
-                onSelect={() => goTo(i)}
-              />
-            ))}
-          </div>
-
-          <span className="wheelHint" aria-hidden>
-            drag · scroll · tap a tab
-          </span>
+                type="button"
+                ref={(el) => {
+                  cardRefs.current[i] = el;
+                }}
+                className={`railCard${on ? " is-active" : ""}`}
+                role="option"
+                aria-selected={on}
+                aria-label={p.title}
+                onClick={() => goTo(i)}
+                style={{ ["--cat"]: cat.color } as React.CSSProperties}
+              >
+                <span className="railCardBar" aria-hidden />
+                <span className="railCardTop">
+                  <span className="railCardIdx">{p.index}</span>
+                  <span className="railCardYear">{p.year}</span>
+                </span>
+                <span className="railCardName">{p.title}</span>
+                <span className="railCardCat">
+                  <span className="wheelCardDot" aria-hidden />
+                  {cat.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
+        <span className="wheelHint" aria-hidden>
+          scroll sideways · click a project
+        </span>
+      </div>
 
-        {/* the active project, read out alongside the wheel */}
-        <div className="wheelDetail">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={current.slug}
-              className="wheelDetailInner"
-              initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -10, filter: "blur(6px)" }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <Detail p={current} />
-            </motion.div>
-          </AnimatePresence>
-        </div>
+      {/* the active project, written out in full below the strip */}
+      <div className="wheelDetail">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={current.slug}
+            className="wheelDetailInner"
+            initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -10, filter: "blur(6px)" }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <Detail p={current} />
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
-  );
-}
-
-/* ── one card on the cylinder ─────────────────────────────────────────────── */
-function Card({
-  p,
-  i,
-  dim,
-  ringRot,
-  active,
-  onSelect,
-}: {
-  p: Project;
-  i: number;
-  dim: { cardW: number; cardH: number };
-  ringRot: MotionValue<number>;
-  active: boolean;
-  onSelect: () => void;
-}) {
-  const cat = projectCategories[p.category];
-
-  // a leaning filing drawer: cards sit parallel at a fixed lean, stepping up &
-  // back (later) / down & back (earlier). The centred card pulls forward and
-  // stands upright — the folder you've drawn out to read.
-  const GAP_Y = dim.cardH * 0.16; // vertical step between cards
-  const GAP_Z = dim.cardH * 0.16; // depth step between cards
-  const LIFT = dim.cardH * 0.55; // how far the open card pulls forward
-  const LEAN = 24; // resting lean of the drawer (degrees)
-
-  const dist = useTransform(ringRot, (r) => Math.abs(i + r / STEP));
-  const opacity = useTransform(dist, (d) => Math.max(0.18, 1 - d * 0.12));
-  const transform = useTransform(ringRot, (r) => {
-    const rel = i + r / STEP; // 0 = drawn-out front card
-    const k = Math.max(0, 1 - Math.abs(rel)); // 1 at front, 0 once a card away
-    const ty = -rel * GAP_Y - k * dim.cardH * 0.04;
-    const tz = -Math.abs(rel) * GAP_Z + k * LIFT;
-    const rx = LEAN * (1 - k); // front card stands upright (0°), rest lean back
-    return `translate(-50%, -50%) translateY(${ty}px) translateZ(${tz}px) rotateX(${rx}deg)`;
-  });
-
-  return (
-    <motion.button
-      type="button"
-      className={`wheelCard${active ? " is-active" : ""}`}
-      onClick={onSelect}
-      aria-label={p.title}
-      style={
-        {
-          width: dim.cardW,
-          height: dim.cardH,
-          opacity,
-          transform,
-          ["--cat"]: cat.color,
-        } as MotionStyle
-      }
-    >
-      <span className="wheelTab" style={{ left: TAB_COLS[i % TAB_COLS.length] }}>
-        {p.index}
-      </span>
-      <span className="wheelCardInner">
-        {active && (
-          <>
-            <span className="wheelCardName">{p.title}</span>
-            <span className="wheelCardCat">
-              <span className="wheelCardDot" aria-hidden />
-              {cat.label}
-            </span>
-          </>
-        )}
-      </span>
-    </motion.button>
   );
 }
 

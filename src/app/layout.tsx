@@ -6,7 +6,7 @@ import SiteChrome from "@/components/SiteChrome";
 import EasterEggs from "@/components/EasterEggs";
 import "./globals.css";
 import "./scenes.css";
-import "./reel.css";
+import "./work-index.css";
 
 const display = Bricolage_Grotesque({
   subsets: ["latin"],
